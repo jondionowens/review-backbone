@@ -111,6 +111,7 @@ var CommentsView = Backbone.View.extend({
      * Remember, we have the underscore functions: */
     this.$el.find('ul').append(this.collection.map(function(comment) {
       // YOUR CODE HERE
+      return comment.get('message');
     }));
 
     return this.$el;
@@ -134,7 +135,91 @@ var comments = new Comments(commentList);
 var commentsView = new CommentsView({ collection: comments });
 
 // Append it to the page (uncomment this when you are ready):
-// $('body').append(commentsView.render());
+ $('body').append(commentsView.render());
+
+
+var Animal = Backbone.Model.extend({
+ initialize: function (species, sound) {
+   this.set({
+     'species': species,
+     'sound': sound
+   });
+ },
+ speak: function() {
+   return this.get('sound');
+ }
+});
+
+var AnimalView = Backbone.View.extend({
+  initialize: function () {
+
+  },
+  render: function () {
+    var html = [
+      '<div>',
+        '<p>',
+          this.model.get('sound'),
+        '</p>',
+      '</div>'
+    ];
+
+    this.$el.html(html);
+    return this.$el;
+  }
+});
+
+var dog = new Animal('Dog', 'Woof!');
+var dogView = new AnimalView({model: dog});
+
+$('body').append(dogView.render())
+
+
+var Car = Backbone.Model.extend({
+  initialize: function (make, model) {
+    this.set({
+      'make': make,
+      'model': model,
+      'motion': 'stop'
+    });
+  },
+  changeMotion: function() {
+    if (this.get('motion') === 'stop') {
+      this.set('motion', 'go');
+    } else {
+      this.set('motion', 'stop');
+    }
+  }
+});
+
+var CarView = Backbone.View.extend({
+
+  initialize: function() {
+    this.model.on('change:motion', this.render, this);
+  },
+
+  render: function() {
+    var html = [
+      '<div>',
+        '<p>',
+          this.model.get('make'),
+          ' ',
+          this.model.get('model'),
+          ' ',
+          this.model.get('motion'),
+        '</p>',
+      '</div>'
+    ];
+
+    this.$el.html(html);
+    return this.$el;
+  }
+});
+
+var car = new Car('Infiniti', 'G35');
+var carView = new CarView({model: car});
+$('body').append(carView.render());
     </script>
   </body>
 </html>
+
+
